@@ -1,0 +1,43 @@
+<canvas width="600" height="480">
+    An alternative text describing what your canvas displays.
+</canvas>
+<script>
+    const canvas = document.querySelector("canvas");
+    const ctx = canvas.getContext("2d");
+
+    class Wave {
+        constructor (start, angle, amplitude, color) {
+            this.start = start;
+            this.angle = angle; 
+            this.amplitude = amplitude;
+            this.color = color;
+            
+            this.x = 0.0;
+            this.t = 0.0;
+            this.position = {x:0, y:0};
+        }
+        calc () {
+            this.x += 0.1;
+            this.t = this.amplitude * Math.cos(this.x);
+
+            this.position.x = this.x * Math.cos(this.angle) - this.t * Math.sin(this.angle);
+            this.position.y = this.x * Math.sin(this.angle) + this.t * Math.cos(this.angle);
+
+            this.position.x += this.start.x;
+            this.position.y += this.start.y;
+        }
+        draw () {
+            ctx.fillStyle = this.color;
+            ctx.fillRect(this.position.x, this.position.y, 1, 1);
+        }
+        move() {
+            this.calc();
+            this.draw();
+        }
+    }
+    let wave = new Wave({x:100, y:100}, Math.PI/6, 5, "red");
+
+    let interval = setInterval(()=>{
+        wave.move();
+    },1);
+</script>
