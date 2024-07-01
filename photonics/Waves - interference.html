@@ -1,0 +1,86 @@
+<canvas width="600" height="480">
+    An alternative text describing what your canvas displays.
+</canvas>
+<script>
+    const canvas = document.querySelector("canvas");
+    const ctx = canvas.getContext("2d");
+
+    class Wave {
+        constructor (start, angle, amplitude, color) {
+            this.start     = start;
+            this.angle     = -1*angle;
+            this.amplitude = amplitude;
+            this.color     = color;
+            
+            this.x = 0.0;
+            this.t = 0.0;
+            this.position = {x:0, y:0};
+        }
+        calc () {
+            // Calc the wave function t(x)
+            this.x += 1;
+            this.t =  this.amplitude * Math.cos(this.x);
+
+            // Rotate function
+            this.position.x = this.x * Math.cos(this.angle) - this.t * Math.sin(this.angle);
+            this.position.y = this.x * Math.sin(this.angle) + this.t * Math.cos(this.angle);
+
+            // Shift function
+            this.position.x += this.start.x;
+            this.position.y += this.start.y;
+        }
+        draw () {
+            ctx.fillStyle = this.color;
+            ctx.fillRect(this.position.x, this.position.y, 1, 1);
+        }
+        move() {
+            this.calc();
+            this.draw();
+        }
+    }
+    let wave1 = new Wave({x:125, y:100}, -Math.PI/6, 2, "red");
+    let wave2 = new Wave({x:125, y:300},  Math.PI/6, 2, "red");
+   
+    class Refractor {
+        constructor (coefficient) {
+            this.coefficient = coefficient;
+        }
+        calc (wave1, wave2) {
+            if ((!wave1.refracted && wave1.position.x >= canvas.width/2)&&(!wave2.refracted && wave2.position.x >= canvas.width/2)){
+                // Calc new angle
+                wave1.angle = Math.asin(Math.sin(wave1.angle)/this.coefficient);
+                // Reset wave function
+                wave1.refracted = true;
+                wave1.start.x = wave1.position.x;
+                wave1.start.y = wave1.position.y;
+                wave1.x = 0.0;
+                // Calc new angle
+                wave2.angle = Math.asin(Math.sin(wave2.angle)/this.coefficient);
+                // Reset wave function
+                wave2.refracted = true;
+                wave2.start.x = wave2.position.x;
+                wave2.start.y = wave2.position.y;
+                wave2.x = 0.0;
+                // Create resulting wave
+                return new Wave({x:wave1.position.x, y:wave1.position.y}, wave1.angle, wave1.amplitude+wave2.amplitude, "red");
+            }  
+        }
+        draw () {
+            ctx.fillStyle = "gray";
+            ctx.fillRect(canvas.width/2, 0, canvas.width/2, canvas.height);
+        }
+    }
+    let refractor = new Refractor(100.0);
+        refractor.draw();
+
+    let resultWave;
+    let interval = setInterval(()=>{
+        if(resultWave) {
+            resultWave.move();
+        } else {
+            wave1.move();
+            wave2.move();
+            resultWave = refractor.calc(wave1,wave2);
+        }
+    },1);
+</script>
