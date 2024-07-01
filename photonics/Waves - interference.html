@@ -13,17 +13,17 @@
             this.color     = color;
             
             this.x = 0.0;
-            this.t = 0.0;
+            this.f = 0.0;
             this.position = {x:0, y:0};
         }
         calc () {
-            // Calc the wave function t(x)
+            // Calc the wave function f(x)
             this.x += 1;
-            this.t =  this.amplitude * Math.cos(this.x);
+            this.f =  this.amplitude * Math.cos(this.x);
 
             // Rotate function
-            this.position.x = this.x * Math.cos(this.angle) - this.t * Math.sin(this.angle);
-            this.position.y = this.x * Math.sin(this.angle) + this.t * Math.cos(this.angle);
+            this.position.x = this.x * Math.cos(this.angle) - this.f * Math.sin(this.angle);
+            this.position.y = this.x * Math.sin(this.angle) + this.f * Math.cos(this.angle);
 
             // Shift function
             this.position.x += this.start.x;
