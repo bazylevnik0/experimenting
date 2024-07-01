@@ -7,10 +7,10 @@
 
     class Wave {
         constructor (start, angle, amplitude, color) {
-            this.start = start;
-            this.angle = angle; 
+            this.start     = start;
+            this.angle     = -1*angle;
             this.amplitude = amplitude;
-            this.color = color;
+            this.color     = color;
             
             this.x = 0.0;
             this.t = 0.0;
@@ -18,8 +18,8 @@
         }
         calc () {
             // Calc the wave function t(x)
-            this.x += 0.1;
-            this.t = this.amplitude * Math.cos(this.x);
+            this.x += 1;
+            this.t =  this.amplitude * Math.cos(this.x);
 
             // Rotate function
             this.position.x = this.x * Math.cos(this.angle) - this.t * Math.sin(this.angle);
@@ -38,9 +38,33 @@
             this.draw();
         }
     }
-    let wave = new Wave({x:100, y:100}, Math.PI/6, 5, "red");
+    let wave = new Wave({x:100, y:100}, -Math.PI/6, 2, "red");
+
+    class Refractor {
+        constructor (coefficient) {
+            this.coefficient = coefficient;
+        }
+        calc (wave) {
+            if (!wave.refracted && wave.position.x >= canvas.width/2){
+                // Calc new angle
+                wave.angle = Math.asin(Math.sin(wave.angle)/this.coefficient);
+                // Reset wave function
+                wave.refracted = true;
+                wave.start.x = wave.position.x;
+                wave.start.y = wave.position.y;
+                wave.x = 0.0;
+            }  
+        }
+        draw () {
+            ctx.fillStyle = "gray";
+            ctx.fillRect(canvas.width/2, 0, canvas.width/2, canvas.height);
+        }
+    }
+    let refractor = new Refractor(1.33);
+        refractor.draw();
 
     let interval = setInterval(()=>{
         wave.move();
+        refractor.calc(wave);
     },1);
 </script>
