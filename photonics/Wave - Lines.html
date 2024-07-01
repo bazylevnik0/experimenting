@@ -1,26 +1,26 @@
 <canvas width="600" height="480">
-    Simple wave class. With vizualization of trigonometry function.
+    Wave class with wavelength and width as lines(view from top).
 </canvas>
 <script>
     const canvas = document.querySelector("canvas");
     const ctx = canvas.getContext("2d");
 
     class Wave {
-        constructor (start, angle, amplitude, color) {
-            this.start = start;
-            this.angle = angle; 
-            this.amplitude = amplitude;
-            this.color = color;
+        constructor (start, angle, length, width, color) {
+            this.start  = start;
+            this.angle  = angle; 
+            this.length = length;
+            this.width  = width;
+            this.color  = color;
             
             this.x = 0.0;
-            this.f = 0.0;
             this.position = {x:0, y:0};
         }
         calc () {
             // Calc the wave function f(x)
-            this.x += 0.1;
-            this.f = this.amplitude * Math.cos(this.x);
-
+            this.x += 1;
+            this.f = 0;
+        
             // Rotate function
             this.position.x = this.x * Math.cos(this.angle) - this.f * Math.sin(this.angle);
             this.position.y = this.x * Math.sin(this.angle) + this.f * Math.cos(this.angle);
@@ -31,14 +31,18 @@
         }
         draw () {
             ctx.fillStyle = this.color;
-            ctx.fillRect(this.position.x, this.position.y, 1, 1);
+            if (this.x % this.length == 0) {
+                for (let i = -1*(this.width/2); i <= this.width/2; i++) {
+                    ctx.fillRect(this.position.x, this.position.y + i, 1, 1);
+                }
+            }
         }
         move() {
             this.calc();
             this.draw();
         }
     }
-    let wave = new Wave({x:100, y:100}, 0, 5, "red");
+    let wave = new Wave({x:100, y:100}, Math.PI/3, 10, 100, "red");
 
     let interval = setInterval(()=>{
         wave.move();
