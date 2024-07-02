@@ -1,0 +1,98 @@
+<canvas width="600" height="480">
+    Complex wave class with refraction class.
+</canvas>
+<script>
+    const canvas = document.querySelector("canvas");
+    const ctx = canvas.getContext("2d");
+
+    class Wave {
+        constructor (start, angle, amplitude, color) {
+            this.start     = start;
+            this.angle     = -1*angle;
+            
+            this.x = 0.0;
+            this.f = 0.0;
+            this.position = {x:0, y:0};
+        }
+        calc () {
+            // Calc the wave function f(x)
+            this.x += 1;
+            this.f =  0;
+
+            // Rotate function
+            this.position.x = this.x * Math.cos(this.angle) - this.f * Math.sin(this.angle);
+            this.position.y = this.x * Math.sin(this.angle) + this.f * Math.cos(this.angle);
+
+            // Shift function
+            this.position.x += this.start.x;
+            this.position.y += this.start.y;
+        }
+        move() {
+            this.calc();
+        }
+    }
+
+    class ComplexWave {
+        constructor (start, angle, color, width,length) {
+            this.wave1  = new Wave({x:start.x-Math.sin(-1*angle)*width/2, y:start.y+Math.cos(-1*angle)*width/2}, angle);
+            this.wave2  = new Wave({x:start.x+Math.sin(-1*angle)*width/2, y:start.y-Math.cos(-1*angle)*width/2}, angle);
+            this.color  = color;
+            this.length = length;
+        }
+        calc() {
+            this.wave1.calc();
+            this.wave2.calc();
+        }
+        draw () {
+            if (this.wave1.x % this.length == 0) {
+            ctx.strokeStyle = this.color;
+            ctx.beginPath(); 
+                ctx.moveTo(this.wave1.position.x, this.wave1.position.y);
+                ctx.lineTo(this.wave2.position.x, this.wave2.position.y);
+            ctx.stroke(); // Render the path
+            }
+        }
+        move () {
+            this.calc();
+            this.draw();
+        }
+    }
+    let complexwave = new ComplexWave({x:100, y:100}, -Math.PI/6, "red",20,10); 
+
+    class Refractor {
+        constructor (coefficient) {
+            this.coefficient = coefficient;
+        }
+        calc (complexwave) {
+            if (!complexwave.wave1.refracted && complexwave.wave1.position.x >= canvas.width/2){
+                // Calc new angle
+                complexwave.wave1.angle = Math.asin(Math.sin(complexwave.wave1.angle)/this.coefficient);
+                // Reset complexwave.wave1 function
+                complexwave.wave1.refracted = true;
+                complexwave.wave1.start.x = complexwave.wave1.position.x;
+                complexwave.wave1.start.y = complexwave.wave1.position.y;
+                complexwave.wave1.x = 0.0;
+            } 
+            if (!complexwave.wave2.refracted && complexwave.wave2.position.x >= canvas.width/2){
+                // Calc new angle
+                complexwave.wave2.angle = Math.asin(Math.sin(complexwave.wave2.angle)/this.coefficient);
+                // Reset complexwave.wave2 function
+                complexwave.wave2.refracted = true;
+                complexwave.wave2.start.x = complexwave.wave2.position.x;
+                complexwave.wave2.start.y = complexwave.wave2.position.y;
+                complexwave.wave2.x = 0.0;
+            } 
+        }
+        draw () {
+            ctx.fillStyle = "gray";
+            ctx.fillRect(canvas.width/2, 0, canvas.width/2, canvas.height);
+        }
+    }
+    let refractor = new Refractor(1.33);
+        refractor.draw();
+
+    let interval = setInterval(()=>{
+        complexwave.move();
+        refractor.calc(complexwave);
+    },1);
+</script>
