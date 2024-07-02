@@ -13,28 +13,37 @@
             this.width  = width;
             this.color  = color;
             
-            this.x = 0.0;
-            this.position = {x:0, y:0};
+            this.x1 = 0;
+            this.x2 = 0;
+            this.position = {x1:0,y1:0,x2:0,y2:0};
         }
         calc () {
             // Calc the wave function f(x)
-            this.x += 1;
-            this.f = 0;
-        
+            this.x1 += 1;
+            this.x2 += 1;
+            this.f1 = -this.width/2;
+            this.f2 = +this.width/2;
+
             // Rotate function
-            this.position.x = this.x * Math.cos(this.angle) - this.f * Math.sin(this.angle);
-            this.position.y = this.x * Math.sin(this.angle) + this.f * Math.cos(this.angle);
+            this.position.x1 = this.x1 * Math.cos(this.angle) - this.f1 * Math.sin(this.angle);
+            this.position.y1 = this.x1 * Math.sin(this.angle) + this.f1 * Math.cos(this.angle);
+            this.position.x2 = this.x2 * Math.cos(this.angle) - this.f2 * Math.sin(this.angle);
+            this.position.y2 = this.x2 * Math.sin(this.angle) + this.f2 * Math.cos(this.angle);
 
             // Shift function
-            this.position.x += this.start.x;
-            this.position.y += this.start.y;
+            this.position.x1 += this.start.x;
+            this.position.y1 += this.start.y;
+            this.position.x2 += this.start.x;
+            this.position.y2 += this.start.y;
         }
         draw () {
             ctx.fillStyle = this.color;
-            if (this.x % this.length == 0) {
-                for (let i = -1*(this.width/2); i <= this.width/2; i++) {
-                    ctx.fillRect(this.position.x, this.position.y + i, 1, 1);
-                }
+            if (this.x1 % this.length == 0) {
+                ctx.beginPath();
+                    ctx.moveTo(this.position.x1, this.position.y1); 
+                    ctx.lineTo(this.position.x2, this.position.y2); 
+                ctx.strokeStyle = this.color;
+                ctx.stroke(); 
             }
         }
         move() {
@@ -42,7 +51,7 @@
             this.draw();
         }
     }
-    let wave = new Wave({x:100, y:100}, Math.PI/3, 10, 100, "red");
+    let wave = new Wave({x:100, y:100}, Math.PI/4, 10, 100, "red");
 
     let interval = setInterval(()=>{
         wave.move();
