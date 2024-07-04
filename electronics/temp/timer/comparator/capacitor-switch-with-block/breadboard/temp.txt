@@ -1,0 +1,8 @@
+resistors: 1k and 680
+transistors: S8050
+capacitor: 680uF
+
+when input not connected - LED emmit
+when input connected:
+~4-5 sec(not counted) LED works, then turn off(but with some blinking after, maybe because inputs connections are not stable)
+*in second position LED turn off also

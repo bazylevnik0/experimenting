@@ -1,0 +1,1 @@
+when c1 charged(win) it stops BT3

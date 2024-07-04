@@ -1,0 +1,2 @@
+more current to base - less in collector
+R1-in R2-out

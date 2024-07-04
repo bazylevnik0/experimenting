@@ -1,0 +1,18 @@
+<b>comparator</b><br>
+mind flow:<br>
+-use idea from sketches, need to know how to simulate and use capacitor(capacitor-curve)<br>
+-think possile to achieve sketches by a schmit-trigger<br>
+* https://en.wikipedia.org/wiki/Schmitt_trigger<br>
+-dont understand how it works,start to read and experiment<br>
+1)bias of transistors(action, state),(transistors folder)<br>
+2)treshold of transitors(property, usefull for switch by capacitor)<br>
+* https://sites.pitt.edu/~qiw4/Academic/ME2082/Transistor%20Basics.pdf
+-understand i do not need trigger but need just a "not"
+* https://www.dummies.com/article/technology/electronics/circuitry/electronics-projects-how-to-create-a-transistor-not-gate-circuit-179357/
+-assemble some logic (capacitor-switch-with-block)
+-understand i cannot use it how it was in my head
+-found comparator based on op-amps, built in main folder
+* https://www.edn.com/using-an-op-amp-as-a-comparator-here-is-what-you-need-to-know/
+* https://en.wikipedia.org/wiki/Operational_amplifier
+* https://todayscircuits.wordpress.com/2011/06/08/op-amps-operational-amplifiers/
+
